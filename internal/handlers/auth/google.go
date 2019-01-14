@@ -46,6 +46,7 @@ func (a *googleAdapter) GetUserData(state, code string) (*user, error) {
 		Sub     string `json:"sub"`
 		Name    string `json:"name"`
 		Picture string `json:"picture"`
+		Hd      string `json:"hd`
 	}
 	if err = json.NewDecoder(oAuthUserInfoReq.Body).Decode(&gUser); err != nil {
 		return nil, errors.Wrap(err, "decoding user info failed")
@@ -54,6 +55,7 @@ func (a *googleAdapter) GetUserData(state, code string) (*user, error) {
 		ID:      gUser.Sub,
 		Name:    gUser.Name,
 		Picture: gUser.Picture + "?sz=64",
+		Hd:      gUser.Hd,
 	}, nil
 }
 

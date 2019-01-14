@@ -29,6 +29,7 @@ var (
 		"id",
 		"name",
 		"picture",
+		"hd",
 	}
 	tokenString string
 )

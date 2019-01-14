@@ -148,6 +148,7 @@ func (h *Handler) fakeClaimsForProxy(c *gin.Context) (*auth.JWTClaims, error) {
 		OAuthName:     displayName,
 		OAuthPicture:  "/images/proxy_user.png",
 		OAuthProvider: "proxy",
+		OAuthHd:       "*",
 	}
 	return claims, nil
 }
@@ -182,6 +183,7 @@ func (h *Handler) handleAuthCheck(c *gin.Context) {
 		"Name":     claims.OAuthName,
 		"Picture":  claims.OAuthPicture,
 		"Provider": claims.OAuthProvider,
+		"Hd":       claims.OAuthHd,
 	}
 	logrus.Debugf("Found session data: %v", sessionData)
 	c.JSON(http.StatusOK, sessionData)

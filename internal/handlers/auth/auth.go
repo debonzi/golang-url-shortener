@@ -23,7 +23,7 @@ type Adapter interface {
 }
 
 type user struct {
-	ID, Name, Picture string
+	ID, Name, Picture, Hd string
 }
 
 // JWTClaims are the data and general information which is stored in the JWT
@@ -33,6 +33,7 @@ type JWTClaims struct {
 	OAuthID       string
 	OAuthName     string
 	OAuthPicture  string
+	OAuthHd       string
 }
 
 // AdapterWrapper wraps an normal oAuth Adapter with some generic functions
@@ -70,6 +71,7 @@ func (a *AdapterWrapper) HandleCallback(c *gin.Context) {
 	session := sessions.Default(c)
 	sessionState := session.Get("state")
 	receivedState := c.Query("state")
+	hosted_domain := "*"
 	if sessionState != receivedState {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("invalid session state: %s", sessionState)})
 		return
@@ -79,6 +81,16 @@ func (a *AdapterWrapper) HandleCallback(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
+
+	google := util.GetConfig().Google
+	if google.Enabled() {
+		hosted_domain = google.HostedDomain
+		if hosted_domain != "*" && user.Hd != hosted_domain {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("invalid domain: %s", user.Hd)})
+			return
+		}
+	}
+
 	logrus.WithFields(logrus.Fields{
 		"Provider": a.GetOAuthProviderName(),
 		"Name":     user.Name,
@@ -102,6 +114,7 @@ func (a *AdapterWrapper) newJWT(user *user, provider string) (string, error) {
 		user.ID,
 		user.Name,
 		user.Picture,
+		user.Hd,
 	})
 	tokenString, err := token.SignedString(util.GetPrivateKey())
 	if err != nil {

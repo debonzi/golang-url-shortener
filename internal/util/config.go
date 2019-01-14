@@ -46,6 +46,7 @@ type redisConf struct {
 type oAuthConf struct {
 	ClientID     string `yaml:"ClientID" env:"CLIENT_ID"`
 	ClientSecret string `yaml:"ClientSecret" env:"CLIENT_SECRET"`
+	HostedDomain string `yaml:"HostedDomain" env:"HOSTED_DOMAIN"`
 	EndpointURL  string `yaml:"EndPointURL" env:"ENDPOINT_URL"` // optional for only GitHub
 }
 
