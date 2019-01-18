@@ -1,1 +1,4 @@
-{}
+{
+    "go.gopath": "/home/debonzi/go",
+    "go.goroot": "/home/debonzi/.gvm/gos/go1.11"
+}
